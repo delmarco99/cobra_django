@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  web:
+    build: 
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../app:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - test_network
+  db:
+    image: postgres
+    networks:
+      - test_network
+
+  
+networks:
+  test_network:
+    driver: bridge
+
+
+
+
+
+      
