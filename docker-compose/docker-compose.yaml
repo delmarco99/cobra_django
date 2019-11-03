@@ -1,12 +1,12 @@
 version: "3.7"
 services:
-  web:
+  backend:
     build: 
       context: ../
-      dockerfile: ./docker/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+      dockerfile: ./docker/dockerfile.django
+    entrypoint: sh django-entrypoint.sh #python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ../app:/app
+      - ../src/backend:/app
     ports:
       - "8000:8000"
     networks:
@@ -15,8 +15,28 @@ services:
     image: postgres
     networks:
       - test_network
+  ui:
+    build: 
+      context: ../
+      dockerfile: ./docker/dockerfile.react
+    #entrypoint: sh react-entrypoint.sh
+    command: npm start
+    volumes:
+      - ../src/frontend/public:/app/public
+      - ../src/frontend/src:/app/src
+      # One-way volume to use node_modules from inside image
+      # - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - API_URL="backend:8000"
+    #depends_on:
+    #  - backend
+    networks:
+      - test_network
 
-  
+
 networks:
   test_network:
     driver: bridge

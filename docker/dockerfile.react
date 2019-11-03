@@ -1,0 +1,19 @@
+# Use an official node runtime as a parent image
+FROM node:8
+
+WORKDIR /app/
+
+# Install dependencies
+# COPY package.json yarn.lock /app/
+
+
+
+# Add rest of the client code
+COPY ./src/frontend/package.json /app/
+
+RUN npm install
+
+COPY ./src/frontend/ /app/
+
+EXPOSE 3000
+# CMD npm start
